@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>New Year Quiz 🎆</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;900&display=swap" rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        color: white;
+
+        background:
+            radial-gradient(circle at top, rgba(255,215,0,0.15), transparent 40%),
+            linear-gradient(135deg, #020024, #090979, #00d4ff);
+    }
+
+    .quiz-card {
+        background: rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(22px);
+        padding: 70px 90px;
+        border-radius: 40px;
+        text-align: center;
+        box-shadow:
+            0 45px 90px rgba(0,0,0,0.85),
+            inset 0 0 40px rgba(255,255,255,0.18);
+        animation: enter 1.6s ease;
+        z-index: 2;
+        position: relative;
+    }
+
+    @keyframes enter {
+        from {
+            opacity: 0;
+            transform: scale(0.8) rotateX(18deg);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) rotateX(0deg);
+        }
+    }
+
+    .welcome {
+        font-size: 34px;
+        opacity: 0.9;
+    }
+
+    .name {
+        font-size: 50px;
+        font-weight: 900;
+        margin-top: 8px;
+        background: linear-gradient(45deg, #ffd700, #ff4ecd, #00eaff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 30px rgba(255,215,0,0.6);
+    }
+
+    .quiz-title {
+        margin-top: 22px;
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-shadow: 0 0 25px rgba(255,215,0,0.7);
+    }
+
+    .tagline {
+        margin-top: 18px;
+        font-size: 18px;
+        opacity: 0.9;
+    }
+
+    .btn-grid {
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .quiz-btn {
+        padding: 16px 22px;
+        font-size: 16px;
+        font-weight: 600;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        color: #ffffff;  
+
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        box-shadow:
+            0 15px 30px rgba(37,117,252,0.6),
+            inset 0 0 12px rgba(255,255,255,0.25);
+        transition: all 0.35s ease;
+    }
+
+    .quiz-btn:hover {
+        transform: translateY(-6px) scale(1.08);
+        background: linear-gradient(135deg, #7f2cff, #00c6ff);
+        box-shadow: 0 25px 45px rgba(0,198,255,0.8);
+    }
+
+    @media (max-width: 600px) {
+        .quiz-card {
+            padding: 50px 35px;
+        }
+        .name {
+            font-size: 36px;
+        }
+        .quiz-title {
+            font-size: 24px;
+        }
+        .btn-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ===== 3D FLOATING SPHERES ===== */
+    .sphere {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 1.2;
+
+        color: white;
+        text-shadow: 0 0 20px rgba(255,255,255,0.8);
+
+        background: radial-gradient(circle at top left,
+            rgba(255,255,255,0.9),
+            rgba(0,198,255,0.6),
+            rgba(106,17,203,0.9));
+
+        box-shadow:
+            0 0 50px rgba(0,198,255,0.8),
+            inset -10px -10px 30px rgba(0,0,0,0.3);
+
+        animation: float3d 12s infinite ease-in-out;
+        transform-style: preserve-3d;
+        pointer-events: none;
+    }
+
+    /* Multiple spheres with different positions and delays */
+    .sphere1 { top: 10%; left: 10%; animation-delay: 0s; width:200px;height:200px;font-size:24px; }
+    .sphere2 { bottom: 15%; right: 12%; animation-delay: 3s; width:180px;height:180px;font-size:20px; }
+    .sphere3 { top: 10%; right: 15%; animation-delay: 5s; width:160px;height:160px;font-size:18px; }
+    .sphere4 { bottom: 25%; left: 18%; animation-delay: 2s; width:170px;height:170px;font-size:19px; }
+
+    @keyframes float3d {
+        0% {
+            transform: translate3d(0,0,0) rotateY(0deg) rotateX(0deg);
+        }
+        25% {
+            transform: translate3d(20px,-40px,10px) rotateY(90deg) rotateX(15deg);
+        }
+        50% {
+            transform: translate3d(-15px,-60px,-10px) rotateY(180deg) rotateX(20deg);
+        }
+        75% {
+            transform: translate3d(10px,-30px,15px) rotateY(270deg) rotateX(10deg);
+        }
+        100% {
+            transform: translate3d(0,0,0) rotateY(360deg) rotateX(0deg);
+        }
+    }
+
+</style>
+</head>
+
+<body>
+
+<div class="quiz-card">
+    <div class="welcome">Welcome to</div>
+    <div class="name">Harsha's🎉</div>
+
+    <div class="quiz-title">General Knowledge Quiz</div>
+
+    <div class="tagline">
+        New Year Special • Fun for the whole family 🎆
+    </div>
+
+    <div class="btn-grid">
+        <button class="quiz-btn" onclick="location.href='kids-quiz-1.html'">👶 Kids Quiz 1</button>
+        <button class="quiz-btn" onclick="location.href='kids-quiz-2.html'">🧒 Kids Quiz 2</button>
+        <button class="quiz-btn" onclick="location.href='adult-quiz-1.html'">🧑 Adult Quiz 1</button>
+        <button class="quiz-btn" onclick="location.href='adult-quiz-2.html'">👨 Adult Quiz 2</button>
+    </div>
+</div>
+
+<!-- 3D Floating Spheres -->
+<div class="sphere sphere1">Happy<br>New<br>Year 🎉</div>
+<div class="sphere sphere2">Happy<br>New<br>Year 🎆</div>
+<div class="sphere sphere3">🎇 Enjoy🎆</div>
+<div class="sphere sphere4">🥳together🎉</div>
+
+</body>
+</html>

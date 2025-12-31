@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kids Quiz 1 🎉</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: #111;
+}
+
+/* Quiz Card */
+.quiz-card {
+    position: relative;
+    width: 900px;
+    max-width: 95%;
+    padding: 70px 60px;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(25px);
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    text-align: center;
+    animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn { from {opacity:0; transform: scale(0.9);} to {opacity:1; transform: scale(1);} }
+
+.timer {
+    position: absolute;
+    top: -25px;
+    right: 20px;
+    font-size: 32px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.5);
+    color: #111;
+    padding: 12px 25px;
+    border-radius: 35px;
+    text-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* Question */
+.question-number { font-size: 24px; margin-bottom: 15px; font-weight: 700; color: #222; }
+.question-text { font-size: 30px; font-weight: 700; margin-bottom: 50px; line-height: 1.4; color:#111; }
+
+/* Options 2x2 grid */
+.options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.option-btn {
+    padding: 25px;
+    font-size: 20px;
+    font-weight: 600;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    background: #a8dadc; /* Light blue */
+    color: #111; /* Black text */
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    transition: all 0.3s ease;
+}
+
+.option-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    background: #81cfe0;
+}
+
+/* Popup */
+.popup {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #fddb92, #d1fdff);
+    color: #111;
+    padding: 40px 50px;
+    border-radius: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    display: none;
+    text-align: center;
+    max-width: 85%;
+    z-index: 999;
+    animation: popupAnim 0.5s ease forwards;
+}
+
+@keyframes popupAnim { from {opacity:0; transform: translate(-50%, -60%) scale(0.8);} to {opacity:1; transform: translate(-50%, -50%) scale(1);} }
+
+.popup h2 { margin-bottom: 20px; font-size: 28px; font-weight: 700; }
+.popup p { font-size: 20px; line-height: 1.5; margin-bottom: 25px; }
+
+.next-btn, .go-btn {
+    padding: 12px 25px;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+.next-btn {
+    background: #ffb703;
+    color: #111;
+}
+
+.next-btn:hover {
+    background: #fb8500;
+    transform: scale(1.05);
+}
+
+.go-btn {
+    background: #219ebc;
+    color: #fff;
+    display: none; /* Hidden initially */
+    margin-top: 10px;
+}
+
+.go-btn:hover {
+    background: #023e8a;
+    transform: scale(1.05);
+}
+
+/* Floating banners */
+.floating {
+    position: absolute;
+    font-size: 32px;
+    font-weight: 700;
+    padding: 15px 25px;
+    border-radius: 25px;
+    background: rgba(255,255,255,0.4);
+    color: #111;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    animation: floatBanner 5s infinite ease-in-out alternate;
+}
+
+.f1 { top: 10%; left: 5%; }
+.f2 { bottom: 10%; right: 5%; animation-delay: 2s; }
+
+@keyframes floatBanner {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-20px); }
+}
+
+@media(max-width:750px) {
+    .quiz-card { padding: 50px 35px; }
+    .question-text { font-size: 24px; }
+    .option-btn { font-size: 18px; padding: 20px; }
+    .timer { font-size:28px; padding:10px 18px; }
+    .floating { font-size:24px; padding:12px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="quiz-card">
+    <div class="timer" id="timer">40</div>
+    <div class="question-number" id="qnum">Question 1 of 10</div>
+    <div class="question-text" id="question">Loading question...</div>
+    <div class="options">
+        <button class="option-btn" id="opt1"></button>
+        <button class="option-btn" id="opt2"></button>
+        <button class="option-btn" id="opt3"></button>
+        <button class="option-btn" id="opt4"></button>
+    </div>
+</div>
+
+<!-- Popup -->
+<div class="popup" id="popup">
+    <h2 id="popup-answer">Answer</h2>
+    <p id="popup-explanation">Explanation</p>
+    <button class="next-btn" id="next-btn">Next</button>
+    <button class="go-btn" id="go-btn" onclick="location.href='quiz.html'">Go to Quiz Page</button>
+</div>
+
+<!-- Floating banners -->
+<div class="floating f1">Think Fast!</div>
+<div class="floating f2">Enjoy the Quiz!</div>
+
+<script>
+const quiz = [
+  {
+    q: "Which animal is the state animal of Andhra Pradesh?",
+    options: ["Blackbuck", "Peacock", "Elephant", "Tiger"],
+    answer: "Blackbuck",
+    explanation: "Blackbuck is the state animal of Andhra Pradesh."
+  },
+  {
+    q: "Who is known as the iron Man of India?",
+    options: ["Gandhi", "Nehru", "Sardar Vallabhbhai Patel", "Subhas Chandra Bose"],
+    answer: "Sardar Vallabhbhai Patel",
+    explanation: "Sardar Vallabhbhai Patel is known as the Iron Man of India."
+  },
+  {
+    q: "12 − 3 × 2 + 8 ÷ 4",
+    options: ["8", "10", "6", "4"],
+    answer: "8",
+    explanation: "Using BODMAS, the correct answer is 8."
+  },
+  {
+    q: "Bharatanatyam is a classical dance form of which Indian state?",
+    options: ["Odisha", "Kerala", "Andhra Pradesh", "Tamil Nadu"],
+    answer: "Tamil Nadu",
+    explanation: "Bharatanatyam originated in Tamil Nadu."
+  },
+  {
+    q: "Choose the correct spelling of the word:",
+    options: ["Necesary", "Neccessary", "Necessary", "Nessessary"],
+    answer: "Necessary",
+    explanation: "The correct spelling is Necessary."
+  },
+  {
+    q: "A place where animals are kept for public viewing",
+    options: ["Zoo", "Park", "Farm", "Forest"],
+    answer: "Zoo",
+    explanation: "Animals are kept in a zoo for public viewing."
+  },
+  {
+    q: "Which vitamin do we get from sunlight & helps in building strong bones?",
+    options: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"],
+    answer: "Vitamin D",
+    explanation: "Sunlight helps our body produce Vitamin D."
+  },
+  {
+    q: "What is the full form of USB?",
+    options: ["Universal Serial Bus", "Universal System Bus", "United Serial Bus", "Universal Storage Bus"],
+    answer: "Universal Serial Bus",
+    explanation: "USB stands for Universal Serial Bus."
+  },
+  {
+    q: "Which word comes first in the dictionary?",
+    options: ["Marbles", "Marblen", "Marbled", "Marblat"],
+    answer: "Marblat",
+    explanation: "Marblat comes first alphabetically."
+  },
+  {
+    q: "Which river flows from the hair of Lord Shiva?",
+    options: ["Yamuna", "Godavari", "Kaveri", "Ganga"],
+    answer: "Ganga",
+    explanation: "River Ganga is believed to flow from Lord Shiva’s hair."
+  }
+];
+
+
+
+let currentQ = 0;
+let timer = 40;
+let interval;
+let score = 0;
+
+function loadQuestion() {
+    document.getElementById('qnum').innerText = `Question ${currentQ+1} of ${quiz.length}`;
+    document.getElementById('question').innerText = quiz[currentQ].q;
+    document.getElementById('opt1').innerText = quiz[currentQ].options[0];
+    document.getElementById('opt2').innerText = quiz[currentQ].options[1];
+    document.getElementById('opt3').innerText = quiz[currentQ].options[2];
+    document.getElementById('opt4').innerText = quiz[currentQ].options[3];
+    timer = 40;
+    document.getElementById('timer').innerText = timer;
+}
+
+// Show popup with answer
+function showPopup(selected=null) {
+    clearInterval(interval);
+    let correct = quiz[currentQ].answer;
+    let message = "";
+    if(selected !== null) {
+        if(selected === correct) { message = "Correct ✅"; score++; }
+        else message = "Wrong ❌";
+    } else {
+        message = "Time's up ⏰";
+    }
+    document.getElementById('popup-answer').innerText = message + " | Answer: " + correct;
+    document.getElementById('popup-explanation').innerText = quiz[currentQ].explanation;
+    document.getElementById('popup').style.display = 'block';
+    document.getElementById('next-btn').style.display = 'inline-block';
+    document.getElementById('go-btn').style.display = 'none';
+}
+
+// Start countdown timer
+function startTimer() {
+    interval = setInterval(() => {
+        timer--;
+        document.getElementById('timer').innerText = timer;
+        if(timer <= 0){
+            showPopup();
+        }
+    },1000);
+}
+
+// Option click handler
+function selectOption(opt){
+    showPopup(opt);
+}
+
+// Assign click events
+document.getElementById('opt1').onclick = () => selectOption(document.getElementById('opt1').innerText);
+document.getElementById('opt2').onclick = () => selectOption(document.getElementById('opt2').innerText);
+document.getElementById('opt3').onclick = () => selectOption(document.getElementById('opt3').innerText);
+document.getElementById('opt4').onclick = () => selectOption(document.getElementById('opt4').innerText);
+
+// Next button
+document.getElementById('next-btn').onclick = () => {
+    document.getElementById('popup').style.display = 'none';
+    currentQ++;
+    if(currentQ < quiz.length) {
+        loadQuestion();
+        startTimer();
+    } else {
+        // Show final score and "Go to Quiz Page"
+        document.getElementById('popup-answer').innerText = `🎉 Quiz Completed! 🎉`;
+        document.getElementById('popup-explanation').innerText = `Your score: ${score} / ${quiz.length}`;
+        document.getElementById('next-btn').style.display = 'none';
+        document.getElementById('go-btn').style.display = 'inline-block';
+        document.getElementById('popup').style.display = 'block';
+    }
+}
+
+// Initialize
+loadQuestion();
+startTimer();
+</script>
+</body>
+</html>
